@@ -701,9 +701,11 @@ GLOBAL_LIST_EMPTY(cached_storage_typecaches)
 	SIGNAL_HANDLER
 
 	for(var/mob/user as anything in is_using)
-		if(user.client)
-			var/client/cuser = user.client
-			cuser.screen -= gone
+		user.hud_used?.open_containers -= gone
+		if(!user.client)
+			continue
+		var/client/cuser = user.client
+		cuser.screen -= gone
 
 	reset_item(gone)
 	refresh_views()
@@ -831,7 +833,7 @@ GLOBAL_LIST_EMPTY(cached_storage_typecaches)
 	if(dest_object.atom_storage)
 		to_chat(user, span_notice("You dump the contents of [parent] into [dest_object]."))
 
-		if(do_rustle)
+		if(do_rustle && rustle_sound)
 			playsound(parent, rustle_sound, 50, TRUE, -5)
 
 		for(var/obj/item/to_dump in real_location)
@@ -1059,7 +1061,9 @@ GLOBAL_LIST_EMPTY(cached_storage_typecaches)
 
 	is_using |= to_show
 
+	to_show.hud_used.open_containers |= storage_interfaces[to_show].list_ui_elements()
 	to_show.client.screen |= storage_interfaces[to_show].list_ui_elements()
+	to_show.hud_used.open_containers |= real_location.contents
 	to_show.client.screen |= real_location.contents
 
 	return TRUE
@@ -1086,6 +1090,9 @@ GLOBAL_LIST_EMPTY(cached_storage_typecaches)
 	if(to_hide.client)
 		to_hide.client.screen -= storage_interfaces[to_hide].list_ui_elements()
 		to_hide.client.screen -= real_location.contents
+	if(to_hide.hud_used)
+		to_hide.hud_used.open_containers -= storage_interfaces[to_hide].list_ui_elements()
+		to_hide.hud_used.open_containers -=  real_location.contents
 	QDEL_NULL(storage_interfaces[to_hide])
 	storage_interfaces -= to_hide
 

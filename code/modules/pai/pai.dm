@@ -59,12 +59,8 @@
 	var/master_name
 	/// DNA string for owner verification
 	var/master_dna
-	/// Toggles whether the Medical  HUD is active or not
-	var/medHUD = FALSE
 	/// Used as currency to purchase different abilities
 	var/ram = 100
-	/// Toggles whether the Security HUD is active or not
-	var/secHUD = FALSE
 	/// The current leash to the owner
 	var/datum/component/leash/leash
 
@@ -220,7 +216,7 @@
 		pai_card.set_personality(src)
 	card = pai_card
 	forceMove(pai_card)
-	// BUBBER EDIT REMOVAL: PAI Freedom: ORIGINAL: leash = AddComponent(/datum/component/leash, pai_card, HOLOFORM_DEFAULT_RANGE, force_teleport_out_effect = /obj/effect/temp_visual/guardian/phase/out)
+	leash = AddComponent(/datum/component/leash, pai_card, HOLOFORM_DEFAULT_RANGE, force_teleport_out_effect = /obj/effect/temp_visual/guardian/phase/out)
 	addtimer(VARSET_WEAK_CALLBACK(src, holochassis_ready, TRUE), HOLOCHASSIS_INIT_TIME)
 	if(!holoform)
 		add_traits(list(TRAIT_IMMOBILIZED, TRAIT_HANDS_BLOCKED), PAI_FOLDED)
@@ -261,7 +257,12 @@
 	SEND_SIGNAL(src, COMSIG_LIVING_HEALTH_UPDATE)
 
 /mob/living/silicon/pai/update_desc(updates)
-	desc = "A pAI mobile hard-light holographics emitter. This one appears in the form of a [chassis]." // BUBBER EDIT: PAI Freedom: ORIGINAL: desc = "A hard-light holographic avatar representing a pAI. This one appears in the form of a [chassis]."
+// BUBBER EDIT START: PAI ReLeashed: ORIGINAL: desc = "A hard-light holographic avatar representing a pAI. This one appears in the form of a [chassis]."
+	if(!holo_leash)
+		desc = "A pAI mobile hard-light holographics emitter. This one appears in the form of a [chassis]."
+	else
+		desc = "A hard-light holographic avatar representing a pAI. This one appears in the form of a [chassis]."
+// BUBBER EDIT END
 	return ..()
 
 /mob/living/silicon/pai/update_icon_state()
@@ -472,7 +473,7 @@
 
 /// Updates the distance we can be from our pai card
 /mob/living/silicon/pai/proc/increment_range(increment_amount)
-	if(!leash) // BUBBER EDIT: PAI Freedom: ORIGINAL: if(emagged)
+	if(!holo_leash) // BUBBER EDIT: PAI ReLeashed: ORIGINAL: if(emagged)
 		return
 
 	var/new_distance = leash.distance + increment_amount

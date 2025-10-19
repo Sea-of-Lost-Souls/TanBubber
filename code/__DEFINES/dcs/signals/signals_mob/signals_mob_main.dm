@@ -82,6 +82,8 @@
 
 ///signal sent when a mob has their holy role set. Sent to the mob having their role changed.
 #define COMSIG_MOB_MIND_SET_HOLY_ROLE "mob_mind_set_holy_role"
+///signal sent when a mob has their job role set. Sent to the mob having their role changed.
+#define COMSIG_MOB_MIND_SET_ROLE "mob_mind_set_role"
 
 ///from base of obj/allowed(mob/M): (/obj) returns ACCESS_ALLOWED if mob has id access to the obj
 #define COMSIG_MOB_TRIED_ACCESS "tried_access"
@@ -227,6 +229,10 @@
 
 ///from living/flash_act(), when a mob is successfully flashed.
 #define COMSIG_MOB_FLASHED "mob_flashed"
+/// from /obj/item/assembly/flash/flash_carbon, to the mob being flashed
+#define COMSIG_MOB_FLASH_OVERRIDE_CHECK "mob_flash_override_check"
+	/// Has the flash effect been overridden?
+	#define FLASH_OVERRIDDEN (1<<0)
 /// from /obj/item/assembly/flash/flash_carbon, to the mob flashing another carbon
 #define COMSIG_MOB_PRE_FLASHED_CARBON "mob_pre_flashed_carbon"
 	/// Return to override deviation to be full deviation (fail the flash, usually)
